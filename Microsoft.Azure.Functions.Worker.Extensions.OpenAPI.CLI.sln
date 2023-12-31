@@ -1,0 +1,58 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32126.317
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A1CB6B0E-9E97-4823-910B-735DB69B1931}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitignore = .gitignore
+		LICENSE = LICENSE
+		README.md = README.md
+		Settings.StyleCop = Settings.StyleCop
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{810145E0-41CF-4E24-BD9C-E7517498BA29}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{66D8DEA8-B477-497F-95BB-E8F9A5BAC352}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{8B62E3FB-9062-4716-803A-1FA51FCE68BC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Azure.Functions.Worker.Extensions.OpenApi.CLI.Tests", "test\Microsoft.Azure.WebJobs.Extensions.OpenApi.CLI.Tests\Microsoft.Azure.Functions.Worker.Extensions.OpenApi.CLI.Tests.csproj", "{65AED6F0-D27E-4D6E-BA42-AD6EE1338082}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Azure.Functions.Worker.Extensions.OpenApi.CLI", "src\Microsoft.Azure.Functions.Worker.Extensions.OpenApi.CLI\Microsoft.Azure.Functions.Worker.Extensions.OpenApi.CLI.csproj", "{A6B7A647-6B88-4838-A096-7AB57AED429C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Azure.Functions.Sample", "samples\Azure.Functions.Sample\Azure.Functions.Sample.csproj", "{1C36899F-F81E-41BC-991E-E716ACCF3697}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{65AED6F0-D27E-4D6E-BA42-AD6EE1338082}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65AED6F0-D27E-4D6E-BA42-AD6EE1338082}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65AED6F0-D27E-4D6E-BA42-AD6EE1338082}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65AED6F0-D27E-4D6E-BA42-AD6EE1338082}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A6B7A647-6B88-4838-A096-7AB57AED429C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6B7A647-6B88-4838-A096-7AB57AED429C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6B7A647-6B88-4838-A096-7AB57AED429C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6B7A647-6B88-4838-A096-7AB57AED429C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C36899F-F81E-41BC-991E-E716ACCF3697}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C36899F-F81E-41BC-991E-E716ACCF3697}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C36899F-F81E-41BC-991E-E716ACCF3697}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C36899F-F81E-41BC-991E-E716ACCF3697}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{66D8DEA8-B477-497F-95BB-E8F9A5BAC352} = {810145E0-41CF-4E24-BD9C-E7517498BA29}
+		{65AED6F0-D27E-4D6E-BA42-AD6EE1338082} = {8B62E3FB-9062-4716-803A-1FA51FCE68BC}
+		{A6B7A647-6B88-4838-A096-7AB57AED429C} = {810145E0-41CF-4E24-BD9C-E7517498BA29}
+		{1C36899F-F81E-41BC-991E-E716ACCF3697} = {66D8DEA8-B477-497F-95BB-E8F9A5BAC352}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {70FEC644-BB3C-4441-AF91-DC694803C8F2}
+	EndGlobalSection
+EndGlobal

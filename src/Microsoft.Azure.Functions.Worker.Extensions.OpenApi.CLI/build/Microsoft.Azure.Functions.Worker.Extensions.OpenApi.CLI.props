@@ -1,0 +1,10 @@
+<Project>
+  <Target Name="AddRuntimeDependenciesToContent"
+         BeforeTargets="GetCopyToOutputDirectoryItems"
+          DependsOnTargets="GenerateBuildDependencyFile;
+                            GenerateBuildRuntimeConfigurationFiles">
+    <ItemGroup>     
+      <ContentWithTargetPath Include="$(ProjectRuntimeConfigFilePath)" TargetPath="azfuncopenapi.runtimeconfig.json" CopyToOutputDirectory="PreserveNewest" />
+    </ItemGroup>
+  </Target>
+</Project>

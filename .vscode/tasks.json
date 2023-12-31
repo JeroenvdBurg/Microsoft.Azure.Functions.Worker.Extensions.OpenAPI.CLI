@@ -1,0 +1,95 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "clean",
+      "command": "dotnet",
+      "args": [
+        "clean",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "type": "process",
+      "problemMatcher": "$msCompile",
+      "options": {
+      }
+    },
+    {
+      "label": "build",
+      "command": "dotnet",
+      "args": [
+        "build",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "type": "process",
+      "dependsOn": "clean",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": "$msCompile",
+      "options": {
+      }
+    },
+    {
+      "label": "clean release",
+      "command": "dotnet",
+      "args": [
+        "clean",
+        "--configuration",
+        "Release",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "type": "process",
+      "problemMatcher": "$msCompile",
+      "options": {
+      }
+    },
+    {
+      "label": "publish",
+      "command": "dotnet",
+      "args": [
+        "publish",
+        "--configuration",
+        "Release",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "type": "process",
+      "dependsOn": "clean release",
+      "problemMatcher": "$msCompile",
+      "options": {
+      }
+    },
+    {
+      "label": "watch",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "watch",
+        "run",
+        "${workspaceFolder}/src/Microsoft.Azure.WebJobs.Extensions.OpenApi.CLI/Microsoft.Azure.WebJobs.Extensions.OpenApi.CLI.csproj",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "type": "func",
+      "dependsOn": "build",
+      "options": {
+        // "cwd": "${workspaceFolder}/samples/Microsoft.Azure.Functions.Worker.Extensions.OpenApi.FunctionApp.V3Net5/bin/Debug/net5.0"
+        // "cwd": "${workspaceFolder}/samples/Microsoft.Azure.WebJobs.Extensions.OpenApi.FunctionApp.V3Proxy/bin/Debug/netcoreapp3.1"
+        // "cwd": "${workspaceFolder}/samples/Microsoft.Azure.WebJobs.Extensions.OpenApi.FunctionApp.V2IoC/bin/Debug/netcoreapp2.1"
+        // "cwd": "${workspaceFolder}/samples/Microsoft.Azure.WebJobs.Extensions.OpenApi.FunctionApp.V2Static/bin/Debug/netcoreapp2.1"
+        // "cwd": "${workspaceFolder}/samples/Microsoft.Azure.WebJobs.Extensions.OpenApi.FunctionApp.V3IoC/bin/Debug/netcoreapp3.1"
+        "cwd": "${workspaceFolder}/samples/Microsoft.Azure.WebJobs.Extensions.OpenApi.FunctionApp.V3Static/bin/Debug/netcoreapp3.1"
+      },
+      "command": "host start",
+      "isBackground": true,
+      "problemMatcher": "$func-dotnet-watch"
+    }
+  ]
+}

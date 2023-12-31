@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFrameworks>net7.0</TargetFrameworks>
+    <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+    <AssemblyName>azfuncopenapi</AssemblyName>
+    <RootNamespace>Microsoft.Azure.Functions.Worker.Extensions.OpenApi.CLI</RootNamespace>
+    <IsPackable>true</IsPackable>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>1.0.3-alpha</Version>
+    <PackageId>Microsoft.Azure.Functions.Worker.Extensions.OpenApi.CLI</PackageId>
+    <Title>Microsoft.Azure.Functions.Worker.Extensions.OpenApi</Title>
+    <Summary>This package helps render OpenAPI document on build.</Summary>
+    <Description>This package helps render OpenAPI document on build</Description>
+    
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Cocona" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.OpenApi" Version="1.5.1" />
+    <PackageReference Include="Moq" Version="4.17.2" />
+    <PackageReference Include="System.IO.FileSystem.Primitives" Version="4.3.0" />
+    <PackageReference Include="System.Runtime.Handles" Version="4.3.0" />
+    <PackageReference Include="System.Runtime.InteropServices" Version="4.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="build\**" Pack="True" PackagePath="build\" />
+  </ItemGroup>
+
+
+
+</Project>
