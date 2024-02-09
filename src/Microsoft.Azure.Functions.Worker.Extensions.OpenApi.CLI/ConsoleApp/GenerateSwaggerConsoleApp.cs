@@ -59,7 +59,7 @@ namespace Microsoft.Azure.Functions.Worker.Extensions.OpenApi.CLI.ConsoleApp
             {
                 Console.Out.WriteLine(ex.ToString());
             }
-            Console.Out.WriteLine($"Swagger.json succesfully generated at {outputPath}");
+            Console.Out.WriteLine($"Swagger succesfully generated at {outputPath}");
 
         }
     }
