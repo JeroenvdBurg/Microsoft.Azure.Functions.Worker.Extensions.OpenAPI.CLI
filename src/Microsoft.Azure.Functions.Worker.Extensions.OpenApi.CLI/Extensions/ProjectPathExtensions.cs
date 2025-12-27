@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Xml;
 
 namespace Microsoft.Azure.Functions.Worker.Extensions.OpenApi.CLI.Extensions
@@ -35,16 +34,25 @@ namespace Microsoft.Azure.Functions.Worker.Extensions.OpenApi.CLI.Extensions
 
         public static string GetProjectDllFileName(this string projectPath, string csprojFileName)
         {
-            var doc = new XmlDocument();
+            // Use Path.Combine and GetFullPath to normalize the path and avoid URI parsing issues
+            var csprojFullPath = Path.GetFullPath(Path.Combine(projectPath, csprojFileName));
 
-            doc.Load($"{projectPath}{DirectorySeparator}{csprojFileName}");
+            var doc = new XmlDocument
+            {
+                XmlResolver = null
+            };
 
-            var elements = doc.GetElementsByTagName(nameof(AssemblyName));
+            using (var stream = new FileStream(csprojFullPath, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                doc.Load(stream);
+            }
+
+            var elements = doc.GetElementsByTagName(nameof(System.Reflection.AssemblyName));
 
             var dllName = elements?.Cast<XmlNode>()?.FirstOrDefault()?.InnerText;
 
             return string.IsNullOrWhiteSpace(dllName)
-                ? csprojFileName.Replace(".csproj", ".dll")
+                ? csprojFileName.Replace(".csproj", ".dll", StringComparison.OrdinalIgnoreCase)
                 : $"{dllName}.dll";
         }
 
