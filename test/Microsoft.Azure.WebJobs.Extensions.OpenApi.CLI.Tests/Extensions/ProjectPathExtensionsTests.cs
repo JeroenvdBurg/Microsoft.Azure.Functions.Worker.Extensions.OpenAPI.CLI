@@ -23,7 +23,7 @@ namespace Microsoft.Azure.Functions.Worker.Extensions.OpenApi.CLI.Tests.Extensio
 
             var directory = Assembly.GetExecutingAssembly().Location;
             var solutionDirectory = Directory.GetParent(directory).Parent.Parent.Parent.Parent.Parent.FullName;
-            this._projectPath = $"{solutionDirectory}/samples/Microsoft.Azure.Functions.Worker.Extensions.OpenApi.FunctionApp.OutOfProc";
+            this._projectPath = $"{solutionDirectory}/samples/Azure.Functions.Sample";
             this._configuration = this._isDebug ? "Debug" : "Release";
             this._target = "net6.0";
             this._compiledPath = $"{this._projectPath}{ProjectPathExtensions.DirectorySeparator}bin{ProjectPathExtensions.DirectorySeparator}{this._configuration}{ProjectPathExtensions.DirectorySeparator}{this._target}";
@@ -65,7 +65,7 @@ namespace Microsoft.Azure.Functions.Worker.Extensions.OpenApi.CLI.Tests.Extensio
         public void GetProjectDllFileName()
         {
             // Arrange
-            var csprojFileName = "Microsoft.Azure.Functions.Worker.Extensions.OpenApi.FunctionApp.OutOfProc.csproj";
+            var csprojFileName = "Azure.Functions.Sample.csproj";
 
 
             // Act
