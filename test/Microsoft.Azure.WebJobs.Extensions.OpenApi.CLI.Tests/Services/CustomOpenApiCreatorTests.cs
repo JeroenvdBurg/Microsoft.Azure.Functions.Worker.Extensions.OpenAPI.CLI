@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -12,33 +13,44 @@ namespace Microsoft.Azure.Functions.Worker.Extensions.OpenApi.CLI.Tests.Services
     [TestClass]
     public class CustomOpenApiCreatorTests
     {
+        private bool _isDebug;
+
+        [TestInitialize]
+        public void Init()
+        {
+            this.IsDebugCheck(ref this._isDebug);
+        }
+
+        [Conditional("DEBUG")]
+        private void IsDebugCheck(ref bool isDebug)
+        {
+            isDebug = true;
+        }
+
         [TestMethod]
         public async Task CreateOpenApiDocument()
         {
             // Arrange
             var apiBaseUrl = "test.function.com";
 
-            // Solution root from test assembly path
             var testAssemblyPath = Assembly.GetExecutingAssembly().Location;
             var solutionDirectory = Directory.GetParent(testAssemblyPath)
                                              .Parent!.Parent!.Parent!.Parent!.Parent!
                                              .FullName;
 
-            // Sample function app project
             var sampleProjectPath = Path.Combine(solutionDirectory, "samples", "Azure.Functions.Sample");
-            var configuration = "Debug";      // or infer from build if needed
+            var configuration = this._isDebug ? "Debug" : "Release";
             var targetFramework = "net10.0";
 
             var compiledPath = Path.Combine(sampleProjectPath, "bin", configuration, targetFramework);
             var compiledDllPath = Path.Combine(compiledPath, "Azure.Functions.Sample.dll");
             var hostJsonPath = Path.Combine(compiledPath, "host.json");
 
-            // If the sample isn't built, mark the test inconclusive instead of failing
             if (!File.Exists(compiledDllPath) || !File.Exists(hostJsonPath))
             {
                 Assert.Inconclusive(
                     $"Sample output not found. Expected '{compiledDllPath}' and '{hostJsonPath}'. " +
-                    "Build the Azure.Functions.Sample project before running this test.");
+                    $"Build the Azure.Functions.Sample project in '{configuration}' before running this test.");
             }
 
             var httpSettings = hostJsonPath.SetHostSettings();
