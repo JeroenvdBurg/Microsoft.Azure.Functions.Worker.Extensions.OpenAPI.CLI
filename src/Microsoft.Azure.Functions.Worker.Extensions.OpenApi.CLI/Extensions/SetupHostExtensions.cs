@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Loader;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Configurations.AppSettings.Extensions;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Abstractions;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Configurations;
@@ -13,6 +15,14 @@ namespace Microsoft.Azure.Functions.Worker.Extensions.OpenApi.CLI.Extensions
 {
     public static class SetupHostExtensions
     {
+        private static AssemblyDependencyResolver _currentResolver;
+
+        static SetupHostExtensions()
+        {
+            // Attach the resolver at static initialization time
+            AssemblyLoadContext.Default.Resolving += OnAssemblyResolving;
+        }
+
         public static HttpSettings SetHostSettings(this string hostJsonPath)
         {
             var host = new ConfigurationBuilder()
@@ -36,11 +46,49 @@ namespace Microsoft.Azure.Functions.Worker.Extensions.OpenApi.CLI.Extensions
 
         public static OpenApiInfo SetOpenApiInfo(this string compiledDllPath)
         {
-            var assembly = Assembly.LoadFrom(compiledDllPath);
-            var type = assembly.GetLoadableTypes().SingleOrDefault(p => p.GetInterface(nameof(IOpenApiConfigurationOptions), true).IsNullOrDefault() == false);
-            return !type.IsNullOrDefault() ? (Activator.CreateInstance(type) as IOpenApiConfigurationOptions)?.Info : new DefaultOpenApiConfigurationOptions().Info;
+            var assemblyDirectory = Path.GetDirectoryName(compiledDllPath);
+            
+            // Set the resolver before loading anything
+            _currentResolver = new AssemblyDependencyResolver(compiledDllPath);
+
+            try
+            {
+                var assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(compiledDllPath);
+                var type = assembly.GetLoadableTypes().SingleOrDefault(p => p.GetInterface(nameof(IOpenApiConfigurationOptions), true).IsNullOrDefault() == false);
+                return !type.IsNullOrDefault() ? (Activator.CreateInstance(type) as IOpenApiConfigurationOptions)?.Info : new DefaultOpenApiConfigurationOptions().Info;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error loading assembly: {ex.Message}");
+                Console.WriteLine($"Assembly directory: {assemblyDirectory}");
+                Console.WriteLine($"Assembly path: {compiledDllPath}");
+                throw;
+            }
         }
 
-      
+        private static Assembly OnAssemblyResolving(AssemblyLoadContext context, AssemblyName assemblyName)
+        {
+            Console.WriteLine($"Attempting to resolve: {assemblyName.Name}");
+            
+            if (_currentResolver != null)
+            {
+                var assemblyPath = _currentResolver.ResolveAssemblyToPath(assemblyName);
+                if (!string.IsNullOrEmpty(assemblyPath) && File.Exists(assemblyPath))
+                {
+                    Console.WriteLine($"✓ Resolved {assemblyName.Name} from {assemblyPath}");
+                    return context.LoadFromAssemblyPath(assemblyPath);
+                }
+                else
+                {
+                    Console.WriteLine($"✗ Could not resolve {assemblyName.Name} (path: {assemblyPath ?? "null"})");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"✗ Resolver is null for {assemblyName.Name}");
+            }
+            
+            return null;
+        }
     }
 }
