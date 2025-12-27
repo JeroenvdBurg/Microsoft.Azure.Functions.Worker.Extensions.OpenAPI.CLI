@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Xml;
 
 namespace Microsoft.Azure.Functions.Worker.Extensions.OpenApi.CLI.Extensions
@@ -12,39 +11,42 @@ namespace Microsoft.Azure.Functions.Worker.Extensions.OpenApi.CLI.Extensions
 
         public static string TrimProjectPath(this string path)
         {
-            var filePath = !Path.IsPathFullyQualified(path)
-                ? $"{Environment.CurrentDirectory.TrimEnd(DirectorySeparator)}{DirectorySeparator}{path}"
-                : path;
+            var normalizedPath = Path.GetFullPath(path);
 
-            return new DirectoryInfo(filePath).FullName.TrimEnd(DirectorySeparator);
+            return normalizedPath.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
         }
 
         public static string GetCsProjFileName(this string path)
         {
-            var filePath = !Path.IsPathFullyQualified(path)
-                ? $"{Environment.CurrentDirectory.TrimEnd(DirectorySeparator)}{DirectorySeparator}{path}"
-                : path;
+            var normalizedPath = Path.GetFullPath(path);
+            var directoryName = Path.GetFileName(normalizedPath.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar));
 
-            var segments = new DirectoryInfo(filePath).FullName.Split(new[]
-            {
-                DirectorySeparator
-            }, StringSplitOptions.RemoveEmptyEntries);
-
-            return $"{segments.Last()}.csproj";
+            return $"{directoryName}.csproj";
         }
 
         public static string GetProjectDllFileName(this string projectPath, string csprojFileName)
         {
-            var doc = new XmlDocument();
+            var normalizedProjectPath = projectPath
+                .Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar)
+                .Replace('/', Path.DirectorySeparatorChar);
 
-            doc.Load($"{projectPath}{DirectorySeparator}{csprojFileName}");
+            var csprojFullPath = Path.GetFullPath(Path.Combine(normalizedProjectPath, csprojFileName));
 
-            var elements = doc.GetElementsByTagName(nameof(AssemblyName));
+            var doc = new XmlDocument
+            {
+                XmlResolver = null
+            };
 
+            using (var stream = new FileStream(csprojFullPath, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                doc.Load(stream);
+            }
+
+            var elements = doc.GetElementsByTagName(nameof(System.Reflection.AssemblyName));
             var dllName = elements?.Cast<XmlNode>()?.FirstOrDefault()?.InnerText;
 
             return string.IsNullOrWhiteSpace(dllName)
-                ? csprojFileName.Replace(".csproj", ".dll")
+                ? csprojFileName.Replace(".csproj", ".dll", StringComparison.OrdinalIgnoreCase)
                 : $"{dllName}.dll";
         }
 
