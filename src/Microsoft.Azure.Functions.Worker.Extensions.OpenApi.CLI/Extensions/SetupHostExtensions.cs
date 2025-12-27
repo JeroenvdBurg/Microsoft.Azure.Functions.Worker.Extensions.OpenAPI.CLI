@@ -15,14 +15,6 @@ namespace Microsoft.Azure.Functions.Worker.Extensions.OpenApi.CLI.Extensions
 {
     public static class SetupHostExtensions
     {
-        private static AssemblyDependencyResolver _currentResolver;
-
-        static SetupHostExtensions()
-        {
-            // Attach the resolver at static initialization time
-            AssemblyLoadContext.Default.Resolving += OnAssemblyResolving;
-        }
-
         public static HttpSettings SetHostSettings(this string hostJsonPath)
         {
             var host = new ConfigurationBuilder()
@@ -47,9 +39,19 @@ namespace Microsoft.Azure.Functions.Worker.Extensions.OpenApi.CLI.Extensions
         public static OpenApiInfo SetOpenApiInfo(this string compiledDllPath)
         {
             var assemblyDirectory = Path.GetDirectoryName(compiledDllPath);
-            
-            // Set the resolver before loading anything
-            _currentResolver = new AssemblyDependencyResolver(compiledDllPath);
+            var resolver = new AssemblyDependencyResolver(compiledDllPath);
+
+            Assembly ResolveAssembly(AssemblyLoadContext context, AssemblyName assemblyName)
+            {
+                var assemblyPath = resolver.ResolveAssemblyToPath(assemblyName);
+                if (!string.IsNullOrEmpty(assemblyPath) && File.Exists(assemblyPath))
+                {
+                    return context.LoadFromAssemblyPath(assemblyPath);
+                }
+                return null;
+            }
+
+            AssemblyLoadContext.Default.Resolving += ResolveAssembly;
 
             try
             {
@@ -64,31 +66,10 @@ namespace Microsoft.Azure.Functions.Worker.Extensions.OpenApi.CLI.Extensions
                 Console.WriteLine($"Assembly path: {compiledDllPath}");
                 throw;
             }
-        }
-
-        private static Assembly OnAssemblyResolving(AssemblyLoadContext context, AssemblyName assemblyName)
-        {
-            Console.WriteLine($"Attempting to resolve: {assemblyName.Name}");
-            
-            if (_currentResolver != null)
+            finally
             {
-                var assemblyPath = _currentResolver.ResolveAssemblyToPath(assemblyName);
-                if (!string.IsNullOrEmpty(assemblyPath) && File.Exists(assemblyPath))
-                {
-                    Console.WriteLine($"✓ Resolved {assemblyName.Name} from {assemblyPath}");
-                    return context.LoadFromAssemblyPath(assemblyPath);
-                }
-                else
-                {
-                    Console.WriteLine($"✗ Could not resolve {assemblyName.Name} (path: {assemblyPath ?? "null"})");
-                }
+                AssemblyLoadContext.Default.Resolving -= ResolveAssembly;
             }
-            else
-            {
-                Console.WriteLine($"✗ Resolver is null for {assemblyName.Name}");
-            }
-            
-            return null;
         }
     }
 }
