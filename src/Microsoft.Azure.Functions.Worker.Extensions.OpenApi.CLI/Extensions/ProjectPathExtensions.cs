@@ -13,21 +13,24 @@ namespace Microsoft.Azure.Functions.Worker.Extensions.OpenApi.CLI.Extensions
         {
             var normalizedPath = Path.GetFullPath(path);
 
-            return normalizedPath.TrimEnd(DirectorySeparator);
+            return normalizedPath.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
         }
 
         public static string GetCsProjFileName(this string path)
         {
             var normalizedPath = Path.GetFullPath(path);
-            var directoryName = new DirectoryInfo(normalizedPath).Name;
+            var directoryName = Path.GetFileName(normalizedPath.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar));
 
             return $"{directoryName}.csproj";
         }
 
         public static string GetProjectDllFileName(this string projectPath, string csprojFileName)
         {
-            // Use Path.Combine and GetFullPath to normalize the path and avoid URI parsing issues
-            var csprojFullPath = Path.GetFullPath(Path.Combine(projectPath, csprojFileName));
+            var normalizedProjectPath = projectPath
+                .Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar)
+                .Replace('/', Path.DirectorySeparatorChar);
+
+            var csprojFullPath = Path.GetFullPath(Path.Combine(normalizedProjectPath, csprojFileName));
 
             var doc = new XmlDocument
             {
@@ -40,7 +43,6 @@ namespace Microsoft.Azure.Functions.Worker.Extensions.OpenApi.CLI.Extensions
             }
 
             var elements = doc.GetElementsByTagName(nameof(System.Reflection.AssemblyName));
-
             var dllName = elements?.Cast<XmlNode>()?.FirstOrDefault()?.InnerText;
 
             return string.IsNullOrWhiteSpace(dllName)

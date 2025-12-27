@@ -30,7 +30,7 @@ namespace Microsoft.Azure.Functions.Worker.Extensions.OpenApi.CLI.Tests.Services
             // Arrange
             var directory = Assembly.GetExecutingAssembly().Location;
             var solutionDirectory = Directory.GetParent(directory).Parent.Parent.Parent.Parent.Parent.FullName;
-            var projectPath = $"{solutionDirectory}/samples/Azure.Functions.Sample";
+            var projectPath = Path.Combine(solutionDirectory, "samples", "Azure.Functions.Sample");
             var configuration = this._isDebug ? "Debug" : "Release";
             var target = "net10.0";
 
