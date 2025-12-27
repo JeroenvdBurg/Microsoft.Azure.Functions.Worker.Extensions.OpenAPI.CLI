@@ -30,8 +30,8 @@ namespace Microsoft.Azure.Functions.Worker.Extensions.OpenApi.CLI.ConsoleApp
             string apibaseurl = "localhost",
             [Option('c', Description = "Configuration. Default is 'Debug'")]
             string configuration = "Debug",
-            [Option('t', Description = "Target framework. Default is 'net7.0'")]
-            string target = "net7.0",
+            [Option('t', Description = "Target framework. Default is 'net10.0'")]
+            string target = "net10.0",
             [Option('v', Description = "OpenAPI spec version. Value can be either 'v2' or 'v3'. Default is 'v3'")]
             OpenApiVersionType version = OpenApiVersionType.V3,
             [Option('f', Description = "OpenAPI output format. Value can be either 'json' or 'yaml'. Default is 'json'")]
