@@ -11,25 +11,17 @@ namespace Microsoft.Azure.Functions.Worker.Extensions.OpenApi.CLI.Extensions
 
         public static string TrimProjectPath(this string path)
         {
-            var filePath = !Path.IsPathFullyQualified(path)
-                ? $"{Environment.CurrentDirectory.TrimEnd(DirectorySeparator)}{DirectorySeparator}{path}"
-                : path;
+            var normalizedPath = Path.GetFullPath(path);
 
-            return new DirectoryInfo(filePath).FullName.TrimEnd(DirectorySeparator);
+            return normalizedPath.TrimEnd(DirectorySeparator);
         }
 
         public static string GetCsProjFileName(this string path)
         {
-            var filePath = !Path.IsPathFullyQualified(path)
-                ? $"{Environment.CurrentDirectory.TrimEnd(DirectorySeparator)}{DirectorySeparator}{path}"
-                : path;
+            var normalizedPath = Path.GetFullPath(path);
+            var directoryName = new DirectoryInfo(normalizedPath).Name;
 
-            var segments = new DirectoryInfo(filePath).FullName.Split(new[]
-            {
-                DirectorySeparator
-            }, StringSplitOptions.RemoveEmptyEntries);
-
-            return $"{segments.Last()}.csproj";
+            return $"{directoryName}.csproj";
         }
 
         public static string GetProjectDllFileName(this string projectPath, string csprojFileName)
