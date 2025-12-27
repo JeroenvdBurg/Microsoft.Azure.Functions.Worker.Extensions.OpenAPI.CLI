@@ -28,7 +28,7 @@
     <Using Include="System.Threading.ExecutionContext" Alias="ExecutionContext" />
   </ItemGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec ContinueOnError="True" Command="dotnet azfuncopenapi.dll --project ../../../ --output ../../../" WorkingDirectory="$(OutputPath)">
+    <Exec ContinueOnError="True" Command="dotnet azfuncopenapi.dll --project ../../../ --configuration $(Configuration) --output ../../../" WorkingDirectory="$(OutputPath)">
       <Output TaskParameter="ConsoleOutput" PropertyName="OutputOfExec" />
     </Exec>   
     <Message Importance="high" Text="$(OutputOfExec)" />
