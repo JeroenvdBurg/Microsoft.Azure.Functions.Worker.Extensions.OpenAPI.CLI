@@ -1,0 +1,66 @@
+name: Publish NuGet Package
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to publish (e.g., 1.0.4)'
+        required: false
+        type: string
+
+env:
+  DOTNET_VERSION: '10.0.x'
+  PROJECT_PATH: 'src/Microsoft.Azure.Functions.Worker.Extensions.OpenApi.CLI/Microsoft.Azure.Functions.Worker.Extensions.OpenApi.CLI.csproj'
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Restore dependencies
+        run: dotnet restore ${{ env.PROJECT_PATH }}
+
+      - name: Build
+        run: dotnet build ${{ env.PROJECT_PATH }} --configuration Release --no-restore
+
+      - name: Run tests
+        run: dotnet test --configuration Release --no-build --verbosity normal
+        continue-on-error: false
+
+      - name: Determine version
+        id: version
+        run: |
+          if [ "${{ github.event.inputs.version }}" != "" ]; then
+            echo "VERSION=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.ref }}" == refs/tags/v* ]]; then
+            echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+          else
+            echo "VERSION=0.0.0-preview" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Pack NuGet package
+        run: dotnet pack ${{ env.PROJECT_PATH }} --configuration Release --no-build --output ./nupkg -p:PackageVersion=${{ steps.version.outputs.VERSION }}
+
+      - name: Push to GitHub Packages
+        run: dotnet nuget push ./nupkg/*.nupkg --api-key ${{ secrets.GITHUB_TOKEN }} --source "https://nuget.pkg.github.com/JeroenvdBurg/index.json" --skip-duplicate
+
+      - name: Upload NuGet package artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuget-package
+          path: ./nupkg/*.nupkg
+          retention-days: 30
