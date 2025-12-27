@@ -7,10 +7,17 @@ on:
   pull_request:
     branches:
       - '**'   # run on all PR source/target branches
-
 jobs:
   build-and-test:
-    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - windows-latest
+          - ubuntu-latest
+          - macos-latest
+
+    runs-on: ${{ matrix.os }}
 
     steps:
       - name: Checkout
