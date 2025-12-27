@@ -7,7 +7,7 @@
     <AssemblyName>azfuncopenapi</AssemblyName>
     <RootNamespace>Microsoft.Azure.Functions.Worker.Extensions.OpenApi.CLI</RootNamespace>
     <IsPackable>true</IsPackable>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <Version>1.0.3-alpha</Version>
     <PackageId>Microsoft.Azure.Functions.Worker.Extensions.OpenApi.CLI</PackageId>
     <Title>Microsoft.Azure.Functions.Worker.Extensions.OpenApi</Title>
