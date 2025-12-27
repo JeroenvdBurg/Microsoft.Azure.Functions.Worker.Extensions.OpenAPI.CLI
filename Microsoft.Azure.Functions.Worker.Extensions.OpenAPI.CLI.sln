@@ -24,6 +24,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Azure.Functions.W
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Azure.Functions.Sample", "samples\Azure.Functions.Sample\Azure.Functions.Sample.csproj", "{1C36899F-F81E-41BC-991E-E716ACCF3697}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "github", "github", "{B735769C-B6C8-4A6E-BA1A-C806CF27FFE0}"
+	ProjectSection(SolutionItems) = preProject
+		build-test.yml = build-test.yml
+		.github\workflows\publish-nuget.yml = .github\workflows\publish-nuget.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
